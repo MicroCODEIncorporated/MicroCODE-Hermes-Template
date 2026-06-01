@@ -20,11 +20,17 @@ ARG HERMES_REF=v2026.5.29.2
 # (same as Docker's `--init` flag and Kubernetes' pause container).
 #
 # Node.js is required only at build time to compile the Hermes React dashboard.
+# bash/nano/gh are kept for interactive Railway SSH sessions and agent tooling.
 # We strip the source + apt lists afterwards to keep the image lean.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl ca-certificates git tini && \
+    apt-get install -y --no-install-recommends bash ca-certificates curl git nano tini && \
+    mkdir -p -m 755 /etc/apt/keyrings && \
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+    chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list && \
     curl -fsSL https://deb.nodesource.com/setup_22.x | bash - && \
-    apt-get install -y --no-install-recommends nodejs && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends gh nodejs && \
     rm -rf /var/lib/apt/lists/*
 
 # Install hermes-agent (provides the `hermes` CLI) and pre-build its React
