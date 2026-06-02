@@ -24,7 +24,7 @@ ARG HERMES_REF=v2026.5.29.2
 # coreutils provides startup commands such as mkdir/rm/cp.
 # We strip the source + apt lists afterwards to keep the image lean.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends bash ca-certificates coreutils curl git nano tini && \
+    apt-get install -y --no-install-recommends bash ca-certificates coreutils curl git less nano rlwrap tini && \
     mkdir -p -m 755 /etc/apt/keyrings && \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
@@ -79,6 +79,9 @@ RUN chmod +x /app/start.sh
 ENV HOME=/data
 ENV HERMES_HOME=/data/.hermes
 ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ENV SHELL=/bin/bash
+ENV TERM=xterm-256color
+ENV PS1="railway:\w\$ "
 
 # Points hermes at our pre-built TUI bundle. hermes's _make_tui_argv checks
 # HERMES_TUI_DIR first: if dist/entry.js exists there, it skips the npm
