@@ -1,5 +1,6 @@
 #!/bin/bash
-export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH:-}"
+export GH_CONFIG_DIR="${GH_CONFIG_DIR:-/data/.config/gh}"
+export PATH="/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 set -e
 
 # Mirror dashboard-ref-only's startup: create every directory hermes expects
@@ -10,7 +11,7 @@ mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
          /data/.hermes/memories /data/.hermes/skills /data/.hermes/pairing \
          /data/.hermes/hooks /data/.hermes/image_cache /data/.hermes/audio_cache \
          /data/.hermes/workspace /data/.hermes/skins /data/.hermes/plans \
-         /data/.hermes/home
+         /data/.hermes/home /data/bin "${GH_CONFIG_DIR}"
 
 if [ ! -f /data/.hermes/config.yaml ] && [ -f /opt/hermes-agent/cli-config.yaml.example ]; then
   cp /opt/hermes-agent/cli-config.yaml.example /data/.hermes/config.yaml
