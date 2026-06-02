@@ -21,9 +21,10 @@ ARG HERMES_REF=v2026.5.29.2
 #
 # Node.js is required only at build time to compile the Hermes React dashboard.
 # bash/nano/gh are kept for interactive Railway SSH sessions and agent tooling.
+# coreutils provides startup commands such as mkdir/rm/cp.
 # We strip the source + apt lists afterwards to keep the image lean.
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends bash ca-certificates curl git nano tini && \
+    apt-get install -y --no-install-recommends bash ca-certificates coreutils curl git nano tini && \
     mkdir -p -m 755 /etc/apt/keyrings && \
     curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
     chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg && \
