@@ -52,15 +52,19 @@ if [ ! -f /data/.profile ]; then
 EOF
 fi
 
-if [ ! -f "${INPUTRC}" ]; then
+if [ ! -f "${INPUTRC}" ] || ! grep -q '\\eOA' "${INPUTRC}"; then
   cat > "${INPUTRC}" <<'EOF'
 set editing-mode emacs
 set enable-keypad on
 set enable-bracketed-paste off
 "\e[A": previous-history
 "\e[B": next-history
+"\eOA": previous-history
+"\eOB": next-history
 "\e[1;5C": forward-word
 "\e[1;5D": backward-word
+"\eOC": forward-char
+"\eOD": backward-char
 EOF
 fi
 
