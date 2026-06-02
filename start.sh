@@ -17,8 +17,13 @@ mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
 
 touch "${HISTFILE}"
 
-if [ ! -f /data/.bashrc ]; then
+if [ ! -f /data/.bashrc ] || grep -q 'enable-bracketed-paste' /data/.bashrc; then
   cat > /data/.bashrc <<'EOF'
+case $- in
+  *i*) ;;
+  *) return ;;
+esac
+
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-/data/.config/gh}"
 export HISTFILE="${HISTFILE:-/data/.bash_history}"
 export HISTCONTROL=ignoredups:erasedups
@@ -29,19 +34,21 @@ export PATH="/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/
 export PS1="${PS1:-railway:\w\$ }"
 
 set -o emacs
-bind '"\e[A": previous-history'
-bind '"\e[B": next-history'
-bind '"\e[1;5C": forward-word'
-bind '"\e[1;5D": backward-word'
-bind 'set enable-bracketed-paste off'
+shopt -s histappend
 
-PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+PROMPT_COMMAND='history -a; history -n'
 EOF
 fi
 
 if [ ! -f /data/.bash_profile ]; then
   cat > /data/.bash_profile <<'EOF'
 [ -f ~/.bashrc ] && . ~/.bashrc
+EOF
+fi
+
+if [ ! -f /data/.profile ]; then
+  cat > /data/.profile <<'EOF'
+[ -n "$BASH_VERSION" ] && [ -f ~/.bashrc ] && . ~/.bashrc
 EOF
 fi
 
