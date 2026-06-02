@@ -82,6 +82,8 @@ ENV GH_CONFIG_DIR=/data/.config/gh
 ENV PATH=/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 ENV SHELL=/bin/bash
 ENV TERM=xterm-256color
+ENV HISTFILE=/data/.bash_history
+ENV INPUTRC=/data/.inputrc
 ENV PS1="railway:\w\$ "
 
 # Points hermes at our pre-built TUI bundle. hermes's _make_tui_argv checks

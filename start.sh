@@ -1,5 +1,7 @@
 #!/bin/bash
 export GH_CONFIG_DIR="${GH_CONFIG_DIR:-/data/.config/gh}"
+export HISTFILE="${HISTFILE:-/data/.bash_history}"
+export INPUTRC="${INPUTRC:-/data/.inputrc}"
 export PATH="/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 set -e
 
@@ -12,6 +14,48 @@ mkdir -p /data/.hermes/cron /data/.hermes/sessions /data/.hermes/logs \
          /data/.hermes/hooks /data/.hermes/image_cache /data/.hermes/audio_cache \
          /data/.hermes/workspace /data/.hermes/skins /data/.hermes/plans \
          /data/.hermes/home /data/bin "${GH_CONFIG_DIR}"
+
+touch "${HISTFILE}"
+
+if [ ! -f /data/.bashrc ]; then
+  cat > /data/.bashrc <<'EOF'
+export GH_CONFIG_DIR="${GH_CONFIG_DIR:-/data/.config/gh}"
+export HISTFILE="${HISTFILE:-/data/.bash_history}"
+export HISTCONTROL=ignoredups:erasedups
+export HISTSIZE=5000
+export HISTFILESIZE=10000
+export INPUTRC="${INPUTRC:-/data/.inputrc}"
+export PATH="/data/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+export PS1="${PS1:-railway:\w\$ }"
+
+set -o emacs
+bind '"\e[A": previous-history'
+bind '"\e[B": next-history'
+bind '"\e[1;5C": forward-word'
+bind '"\e[1;5D": backward-word'
+bind 'set enable-bracketed-paste off'
+
+PROMPT_COMMAND="history -a; history -n${PROMPT_COMMAND:+; $PROMPT_COMMAND}"
+EOF
+fi
+
+if [ ! -f /data/.bash_profile ]; then
+  cat > /data/.bash_profile <<'EOF'
+[ -f ~/.bashrc ] && . ~/.bashrc
+EOF
+fi
+
+if [ ! -f "${INPUTRC}" ]; then
+  cat > "${INPUTRC}" <<'EOF'
+set editing-mode emacs
+set enable-keypad on
+set enable-bracketed-paste off
+"\e[A": previous-history
+"\e[B": next-history
+"\e[1;5C": forward-word
+"\e[1;5D": backward-word
+EOF
+fi
 
 if [ ! -f /data/.hermes/config.yaml ] && [ -f /opt/hermes-agent/cli-config.yaml.example ]; then
   cp /opt/hermes-agent/cli-config.yaml.example /data/.hermes/config.yaml
