@@ -78,6 +78,7 @@ RUN chmod +x /app/start.sh
 
 ENV HOME=/data
 ENV HERMES_HOME=/data/.hermes
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 # Points hermes at our pre-built TUI bundle. hermes's _make_tui_argv checks
 # HERMES_TUI_DIR first: if dist/entry.js exists there, it skips the npm
